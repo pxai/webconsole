@@ -2,6 +2,7 @@
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -36,42 +37,48 @@ public class WebRequest {
 	 * @return true if everything went fine, false otherwise
 	 */
 	public boolean get (String urlString) {
-		boolean result = false;
-		responseString = "";
-		exceptionMessage = "";
-		String line = "";
-		
-		
-		try {
-				// Create an URL instance
-			   URL url = new URL(urlString);
-			   
-		       // Create the HttpConnection
-			   HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		       connection.setRequestProperty("User-Agent", userAgent); 
-		       connection.setRequestMethod("GET");
-		       setCookies(connection);
+        boolean result = false;
+        responseString = "";
+        exceptionMessage = "";
+        String line = "";
+        InputStream in = null;
 
-		        // Get input stream from server
-		        BufferedReader in = new BufferedReader(new InputStreamReader(
-		                                    connection.getInputStream()));
-		    // Read response from server
-		    while ((line = in.readLine()) != null) {
-		    	responseString += line;
-		    }
-		    
-		    in.close();
-		return true;
-		
-	    } catch (IOException e) {
-		  exceptionMessage = e.getMessage();
-		  e.printStackTrace();
-		} catch (Exception e) {
-		  exceptionMessage = e.getMessage();	    	
-		}
-		
-		return false;
-		
+        try {
+            // Create an URL instance
+            URL url = new URL(urlString);
+
+            // Create the HttpConnection
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("User-Agent", userAgent);
+            connection.setRequestMethod("GET");
+            setCookies(connection);
+
+            int status = connection.getResponseCode();
+
+            if(status >= 400)
+                in = connection.getErrorStream();
+            else
+                in = connection.getInputStream();
+
+            // Get input stream from server
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+            // Read response from server
+            while ((line = reader.readLine()) != null) {
+                responseString += line;
+            }
+
+            reader.close();
+            return true;
+
+        } catch (IOException e) {
+            exceptionMessage = e.getMessage();
+            e.printStackTrace();
+        } catch (Exception e) {
+            exceptionMessage = e.getMessage();
+        }
+
+        return false;
 	}
 	
 	/**

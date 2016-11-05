@@ -18,13 +18,13 @@ public class Main {
 		parameters.put("usuario", "falken");
 		parameters.put("password", "josua");
 		
-		String urlPost = "http://www.cuatrovientos.org/login.php";
-		
-		if (webRequest.post(urlPost , parameters)) {
-			System.out.println("OK POST: " + webRequest.getResponseString() + "\n" + webRequest.getResponseCode());
-		} else {
-			System.out.println("Error: " + webRequest.getExceptionMessage() + "\n" + webRequest.getResponseCode());			
-		}
-		
+		String urlPost = "http://localhost/login.php";
+
+			if (webRequest.post(urlPost , parameters)) {
+				System.out.println("OK POST: " + webRequest.getResponseString() + "\n" + webRequest.getResponseCode());
+			} else {
+				System.out.println("Error: " + webRequest.getExceptionMessage() + "\n" + webRequest.getResponseCode());			
+			}
+
 	}
 }
