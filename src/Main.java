@@ -18,7 +18,7 @@ public class Main {
 		parameters.put("usuario", "falken");
 		parameters.put("password", "josua");
 		
-		String urlPost = "http://localhost/login.php";
+		String urlPost = "http://www.cuatrovientos.org";
 
 			if (webRequest.post(urlPost , parameters)) {
 				System.out.println("OK POST: " + webRequest.getResponseString() + "\n" + webRequest.getResponseCode());

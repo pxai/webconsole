@@ -54,11 +54,7 @@ public class WebRequest {
             setCookies(connection);
 
             int status = connection.getResponseCode();
-
-            if(status >= 400)
-                in = connection.getErrorStream();
-            else
-                in = connection.getInputStream();
+            in = (status >= 400)?connection.getErrorStream():connection.getInputStream();
 
             // Get input stream from server
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -94,6 +90,7 @@ public class WebRequest {
 	    String parameterValue = "";
 		responseString = "";
 		exceptionMessage = "";
+	    InputStream in = null;
 
 			try {
 
@@ -117,18 +114,22 @@ public class WebRequest {
 			    output.write(postString);
 		        output.close();
 
+		        
 		        // Now we get the response
-		        BufferedReader in = new BufferedReader(
-		                                    new InputStreamReader(
-		                                    connection.getInputStream()));
+		           int status = connection.getResponseCode();
+		            in = (status >= 400)?connection.getErrorStream():connection.getInputStream();
+
+		            // Get input stream from server
+		            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
 		        
 		      getCookies(connection);
 		      responseCode = connection.getResponseCode();
 		      
-		      while ((line = in.readLine()) != null) {
+		      while ((line = reader.readLine()) != null) {
 		        responseString += line;
 		      }
-		      in.close();
+		      reader.close();
 		     return true;
 		     
 		    } catch (IOException e) {
